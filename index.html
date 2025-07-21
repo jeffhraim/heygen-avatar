@@ -5,26 +5,30 @@
   <title>Hi, I'm Athena – Skillspire's Virtual Teacher</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
+      height: 100%;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
       color: #f0f0f0;
       text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 40px 20px;
-      min-height: 100vh;
+      justify-content: flex-start;
+      position: relative;
+      overflow-x: hidden;
     }
 
     h1 {
       font-size: 2.5em;
-      margin-bottom: 20px;
+      margin: 40px 20px 20px;
       background: linear-gradient(90deg, #00ffe7, #8f00ff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+      z-index: 10;
+      position: relative;
     }
 
     #ai-transcript {
@@ -35,21 +39,30 @@
       backdrop-filter: blur(8px);
       box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
       font-size: 1.2em;
-      margin-top: 20px;
+      margin-top: 10px;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: all 0.3s ease;
+      z-index: 10;
+      position: relative;
     }
-
-    /* Heygen styles injected dynamically remain unchanged */
   </style>
 </head>
 <body>
-  <h1>Hi, I'm Athena – Skillspire's Virtual Teacher</h1>
+  <!-- Gradient background overlay -->
+  <div style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    z-index: 0;
+  "></div>
 
+  <h1>Hi, I'm Athena – Skillspire's Virtual Teacher</h1>
   <div id="ai-transcript">Initializing conversation...</div>
 
   <script>
-    // Simulated transcript animation
+    // Transcript animation
     const phrases = [
       "Hello! I'm Athena, your AI teaching assistant.",
       "Let's explore the future of tech together.",
@@ -155,7 +168,7 @@
         }
       });
 
-      // Make the element draggable
+      // Draggable
       let isDragging = false;
       let offsetX = 0;
       let offsetY = 0;
@@ -165,9 +178,8 @@
         const rect = wrapDiv.getBoundingClientRect();
         offsetX = e.clientX - rect.left;
         offsetY = e.clientY - rect.top;
-
         wrapDiv.classList.add("dragging");
-        wrapDiv.style.transform = "none"; // disable centering on drag
+        wrapDiv.style.transform = "none";
       });
 
       document.addEventListener("mousemove", function (e) {
