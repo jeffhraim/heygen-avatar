@@ -31,25 +31,27 @@
       position: relative;
     }
 
-    #ai-transcript {
-      position: fixed;
-      top: 120px;
-      right: 40px;
-      width: 300px;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 20px 30px;
-      border-radius: 12px;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
-      font-size: 1.1em;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      z-index: 10;
-      color: #f0f0f0;
-      text-align: left;
-    }
+#ai-transcript {
+  position: fixed;
+  top: 120px; /* adjust as needed */
+  right: 40px;
+  width: 300px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 20px 30px;
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+  font-size: 1.1em;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 10;
+  color: #f0f0f0;
+  text-align: left;
+}
+    
   </style>
 </head>
 <body>
+  <!-- Gradient background overlay -->
   <div style="
     position: fixed;
     top: 0;
@@ -63,30 +65,144 @@
   <h1>Hi, I'm Athena – Skillspire's Virtual Teacher</h1>
   <div id="ai-transcript">Initializing conversation...</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@heygen/streaming-client@latest/dist/streaming-client.umd.js"></script>
   <script>
+    // Transcript animation
+    const phrases = [
+      "Hello! I'm Athena, your AI teaching assistant.",
+      "Let's explore the future of tech together.",
+      "Need help with coding, data, or AI? Just ask!",
+      "Are you ready to level up your skills?"
+    ];
+
+    let idx = 0;
     const transcriptEl = document.getElementById("ai-transcript");
-    const API_KEY = "NWMwZGUzY2NhY2Q1NDMzNGFhOWE3NzU0ZDFmY2FjMTAtMTc1MjA4MTEyMQ==";
 
-    const client = new HeygenStreaming.StreamingClient({
-      apiKey: API_KEY,
-      avatarName: "Elenora_IT_Sitting_public",
-      userName: "athena-skillspire"
-    });
+    setInterval(() => {
+      transcriptEl.textContent = phrases[idx];
+      idx = (idx + 1) % phrases.length;
+    }, 5000);
 
-    client.onTranscript = (text) => {
-      transcriptEl.textContent = text;
-      speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.voice = speechSynthesis.getVoices().find(voice => voice.lang.startsWith("en"));
-      speechSynthesis.speak(utterance);
-    };
+    // Heygen Embed Script
+    !function(window){
+      const host = "https://labs.heygen.com",
+            url = host + "/guest/streaming-embed?share=eyJxdWFsaXR5IjoiaGlnaCIsImF2YXRhck5hbWUiOiJFbGVub3JhX0lUX1NpdHRpbmdfcHVibGljIiwicHJldmlld0ltZyI6Imh0dHBzOi8vZmlsZXMyLmhleWdlbi5haS9hdmF0YXIvdjMvY2JkNGE2OTg5MGEwNDBlNmEwZDU0MDg4ZTYwNmE1NTlfNDU2MTAvcHJldmlld190YWxrXzMud2VicCIsIm5lZWRSZW1vdmVCYWNrZ3JvdW5kIjpmYWxzZSwia25vd2xlZGdlQmFzZUlkIjoiNDM3MjM3YWMxMTNjNDNkMTk1MTM2YmE5YWExMDgzZWEiLCJ1c2VybmFtZSI6IjVjMGRlM2NjYWNkNTQzMzRhYTlhNzc1NGQxZmNhYzEwIn0=&inIFrame=1";
 
-    client.onError = (err) => {
-      transcriptEl.textContent = "Error: " + err.message;
-    };
+      const wrapDiv = document.createElement("div");
+      wrapDiv.id = "heygen-streaming-embed";
 
-    client.connect();
+      const container = document.createElement("div");
+      container.id = "heygen-streaming-container";
+
+      const stylesheet = document.createElement("style");
+      stylesheet.innerHTML = `
+        #heygen-streaming-embed {
+          z-index: 9999;
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 500px;
+          height: 500px;
+          border-radius: 50%;
+          border: 2px solid #fff;
+          box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.12);
+          transition: all linear 0.1s;
+          overflow: hidden;
+          opacity: 0;
+          visibility: hidden;
+          cursor: grab;
+        }
+        #heygen-streaming-embed.dragging {
+          cursor: grabbing;
+        }
+        #heygen-streaming-embed.show {
+          opacity: 1;
+          visibility: visible;
+        }
+        #heygen-streaming-embed.expand {
+          height: 366px;
+          width: calc(366px * 16 / 9);
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          border: 0;
+          border-radius: 8px;
+        }
+        @media (max-width: 540px) {
+          #heygen-streaming-embed.expand {
+            height: 266px;
+            width: 96%;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+          }
+        }
+        #heygen-streaming-container {
+          width: 100%;
+          height: 100%;
+        }
+        #heygen-streaming-container iframe {
+          width: 100%;
+          height: 100%;
+          border: 0;
+        }
+      `;
+
+      const iframe = document.createElement("iframe");
+      iframe.allowFullscreen = false;
+      iframe.title = "Streaming Embed";
+      iframe.role = "dialog";
+      iframe.allow = "microphone";
+      iframe.src = url;
+
+      let visible = false, initial = false;
+
+      window.addEventListener("message", (e) => {
+        if (e.origin === host && e.data && e.data.type === "streaming-embed") {
+          if (e.data.action === "init") {
+            initial = true;
+            wrapDiv.classList.toggle("show", initial);
+          } else if (e.data.action === "show") {
+            visible = true;
+            wrapDiv.classList.toggle("expand", visible);
+          } else if (e.data.action === "hide") {
+            visible = false;
+            wrapDiv.classList.toggle("expand", visible);
+          }
+        }
+      });
+
+      // Draggable
+      let isDragging = false;
+      let offsetX = 0;
+      let offsetY = 0;
+
+      wrapDiv.addEventListener("mousedown", function (e) {
+        isDragging = true;
+        const rect = wrapDiv.getBoundingClientRect();
+        offsetX = e.clientX - rect.left;
+        offsetY = e.clientY - rect.top;
+        wrapDiv.classList.add("dragging");
+        wrapDiv.style.transform = "none";
+      });
+
+      document.addEventListener("mousemove", function (e) {
+        if (isDragging) {
+          wrapDiv.style.left = `${e.clientX - offsetX}px`;
+          wrapDiv.style.top = `${e.clientY - offsetY}px`;
+        }
+      });
+
+      document.addEventListener("mouseup", function () {
+        isDragging = false;
+        wrapDiv.classList.remove("dragging");
+      });
+
+      container.appendChild(iframe);
+      wrapDiv.appendChild(stylesheet);
+      wrapDiv.appendChild(container);
+      document.body.appendChild(wrapDiv);
+    }(globalThis);
   </script>
 </body>
 </html>
